@@ -1,0 +1,109 @@
+openapi: 3.0.3
+
+info:
+  title: Gatekeeper
+  version: 0.0.1
+  description: Handles OIDC authentication for static web apps
+
+servers:
+  - url: https://gtk.tuuturu.org
+
+tags:
+  - name: API
+    description: Entrypoints for use by SPAs
+  - name: Tools
+    description: Entrypoints to help dealing with authentication
+  - name: Plumbing
+    description: Entrypoints for internal use
+
+paths:
+  /userinfo:
+    get:
+      operationId: GetUserinfo
+      tags:
+        - API
+      description: |
+        Exposes user information regarding the current active session. Use this to retrieve user information like email,
+        user ID, etc.
+      parameters:
+        - $ref: '#/components/parameters/MandatoryAccessTokenCookie'
+      responses:
+        200:
+          description: Object containing user info.
+        401:
+          description: No valid access token available.
+  /login:
+    get:
+      operationId: Login
+      tags:
+        - API
+      description: |
+        Logs a user in. After getting through the login process, the client will have the following HTTP(s)Only cookies
+        set:
+        - access_token
+        - refresh_token
+        - id_token
+      parameters:
+        - name: redirect
+          in: query
+          required: true
+          description: Absolute URL to return to after successful login
+          example: "https://example.com"
+      responses:
+        301:
+          description: A properly formatted redirect response to initiate the OAuth2 authorization code flow.
+  /logout:
+    post:
+      operationId: Logout
+      tags:
+        - API
+      description: Logs a user out.
+      parameters:
+        - $ref: '#/components/parameters/MandatoryAccessTokenCookie'
+      responses:
+        204:
+          description: Successfully logged out user.
+        401:
+          description: No valid session to log out
+
+  /callback:
+    get:
+      operationId: Callback
+      tags:
+        - Plumbing
+      responses:
+        301:
+          description: A redirection back to the original web page upon succesful code exchange.
+
+  /api/{upstream}:
+    get:
+      operationId: Proxy
+      tags:
+        - Tools
+      description: |
+        An optional endpoint which proxies requests to backends as defined by the UPSTREAMS environment variable. This
+        entrypoint transforms a Http(s)Only cookie into a Authorization header bearer token.
+
+        NB: the method 'get' is just an example. This endpoint supports what ever methods the upstream supports.
+      parameters:
+        - in: path
+          name: upstream
+          description: Name of the upstream
+          required: true
+      responses:
+        200:
+          description: Returns what ever responses the upstream provides.
+
+
+components:
+  parameters:
+    MandatoryAccessTokenCookie:
+      name: access_token
+      in: cookie
+      required: true
+      description: Access token representing a user token
+    OptionalAccessTokenCookie:
+      name: access_token
+      in: cookie
+      required: false
+      description: Access token representing a user token
