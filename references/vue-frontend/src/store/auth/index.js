@@ -1,7 +1,8 @@
 import Axios from 'axios'
 
 const axios = Axios.create({
-  baseURL: 'http://localhost:4554'
+  baseURL: 'http://localhost:4554',
+  withCredentials: true, // Important. This tells the browser to send cookies
 })
 
 const state = () => ({
@@ -21,6 +22,17 @@ const actions = {
     } catch (e) {
       console.error(e)
     }
+  },
+  async login() {
+    window.location.href = "http://localhost:4554/login"
+  },
+  async logout({ commit }) {
+    await axios.request({
+      url: '/logout',
+      method: 'POST'
+    })
+    
+    commit('user', null)
   }
 }
 

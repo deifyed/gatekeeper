@@ -1,7 +1,7 @@
 <template>
   <div class="LoginBox">
-    <button class="primary" v-if="!isAuthenticated">Login</button>
-    <button v-else>Logout</button>
+    <button class="primary" v-if="!isAuthenticated" @click="$store.dispatch('auth/login')">Login</button>
+    <button v-else @click="$store.dispatch('auth/logout')">Logout</button>
   </div>
 </template>
 
@@ -12,7 +12,7 @@ export default {
   name: 'LoginBox',
   computed: {
     ...mapGetters('auth', ['isAuthenticated'])
-  }
+  },
 }
 </script>
 

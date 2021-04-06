@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/sirupsen/logrus"
 	"net/url"
 	"os"
 	"strings"
@@ -11,6 +12,7 @@ func LoadConfig() Config {
 	lGet := generateListGetter(os.Getenv, ";")
 
 	cfg := Config{
+		LogLevel:     stringToLogLevel(get("LOG_LEVEL", "info")),
 		Port:         get("PORT", "4554"),
 		ClientID:     get("CLIENT_ID", ""),
 		ClientSecret: get("CLIENT_SECRET", ""),
@@ -56,5 +58,18 @@ func generateListGetter(getter stringGetter, delimiter string) func(string, []st
 		parts := strings.Split(cleanedValue, delimiter)
 
 		return parts
+	}
+}
+
+func stringToLogLevel(rawLevel string) logrus.Level {
+	switch rawLevel {
+	case "debug":
+		return logrus.DebugLevel
+	case "warning":
+		return logrus.WarnLevel
+	case "error":
+		return logrus.ErrorLevel
+	default:
+		return logrus.InfoLevel
 	}
 }
