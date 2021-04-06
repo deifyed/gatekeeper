@@ -10,13 +10,17 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	"log"
 
-	"github.com/deifyed/gatekeeper/pkg/core/config"
+	"github.com/deifyed/gatekeeper/pkg/config"
 
-	sw "github.com/deifyed/gatekeeper/pkg/core/routers"
+	sw "github.com/deifyed/gatekeeper/pkg/core"
 )
+
+//go:embed specification.yaml
+var specification []byte
 
 func main() {
 	log.Printf("Server started")
@@ -28,7 +32,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	router := sw.New(cfg)
+	router := sw.New(cfg, specification)
 
 	log.Fatal(router.Run(fmt.Sprintf(":%s", cfg.Port)))
 }

@@ -10,17 +10,17 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/deifyed/gatekeeper/pkg/core"
+	"github.com/deifyed/gatekeeper/pkg/state"
 	"github.com/google/uuid"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-const authcodeflowPath = "pkg/core/handlers/authcodeflow.go"
+const authcodeflowPath = "pkg/handlers/authcodeflow.go"
 
 // CreateLoginHandler -
-func CreateLoginHandler(storage core.StateStorage, opts CreateLoginHandlerOpts) gin.HandlerFunc {
+func CreateLoginHandler(storage state.Storage, opts CreateLoginHandlerOpts) gin.HandlerFunc {
 	logger := opts.Logger.WithFields(map[string]interface{}{
 		"file": authcodeflowPath,
 		"func": "CreateLoginHandler",
@@ -45,7 +45,7 @@ func CreateLoginHandler(storage core.StateStorage, opts CreateLoginHandlerOpts) 
 	}
 }
 
-func CreateCallbackHandler(storage core.StateStorage, opts CreateCallbackHandlerOpts) gin.HandlerFunc {
+func CreateCallbackHandler(storage state.Storage, opts CreateCallbackHandlerOpts) gin.HandlerFunc {
 	logger := opts.Logger.WithFields(map[string]interface{}{
 		"file": authcodeflowPath,
 		"func": "CreateCallbackHandler",

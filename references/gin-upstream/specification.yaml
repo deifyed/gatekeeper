@@ -1,0 +1,21 @@
+openapi: 3.0.3
+
+info:
+  title: Reference Upstream
+  version: '1'
+
+paths:
+  /open:
+    get:
+      operationId: GetOpen
+      responses:
+        200:
+          description: Successful response from open route
+  /closed:
+    get:
+      operationId: GetClosed
+      responses:
+        200:
+          description: Successful response from closed route
+        401:
+          description: Not authenticated

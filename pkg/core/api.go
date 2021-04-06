@@ -13,17 +13,17 @@ import (
 	"context"
 	"fmt"
 	"github.com/coreos/go-oidc"
-	"github.com/deifyed/gatekeeper/pkg/core/discovery"
-	"github.com/deifyed/gatekeeper/pkg/core/handlers"
+	"github.com/deifyed/gatekeeper/pkg/discovery"
+	"github.com/deifyed/gatekeeper/pkg/handlers"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 	"net/http"
 	"os"
 	"sigs.k8s.io/yaml"
 
-	"github.com/deifyed/gatekeeper/pkg/core/config"
-	"github.com/deifyed/gatekeeper/pkg/core/cookies"
-	"github.com/deifyed/gatekeeper/pkg/statestorage/memory"
+	"github.com/deifyed/gatekeeper/pkg/config"
+	"github.com/deifyed/gatekeeper/pkg/cookies"
+	"github.com/deifyed/gatekeeper/pkg/state/memory"
 
 	"github.com/gin-gonic/gin"
 )

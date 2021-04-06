@@ -10,6 +10,7 @@ require (
 	github.com/google/uuid v1.2.0
 	github.com/pquerna/cachecontrol v0.1.0 // indirect
 	github.com/sirupsen/logrus v1.8.1
-	golang.org/x/oauth2 v0.0.0-20210402161424-2e8d93401602 // indirect
+	golang.org/x/oauth2 v0.0.0-20210402161424-2e8d93401602
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
+	sigs.k8s.io/yaml v1.2.0
 )
