@@ -2,6 +2,7 @@ package cookies
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -82,4 +83,44 @@ func (c CookieHandler) SetIDToken(ctx *gin.Context, idToken string) {
 
 func (c CookieHandler) DeleteIDToken(ctx *gin.Context) {
 	ctx.SetCookie(c.idTokenKey, "", deleteCookieAge, "/", c.domain, c.secure, c.httpOnly)
+}
+
+/*
+ * Proxy helper
+ */
+func (c CookieHandler) SyncTokens(ctx *gin.Context) {
+	accessToken, _ := ctx.Cookie(c.accessTokenKey)
+	refreshToken, _ := ctx.Cookie(c.refreshTokenKey)
+	idToken, _ := ctx.Cookie(c.idTokenKey)
+	maxAge := 3600 // TODO: Needs some smarter value maybe
+
+	ctx.Request.AddCookie(&http.Cookie{
+		Name:     c.accessTokenKey,
+		Value:    accessToken,
+		Path:     "/",
+		Domain:   c.domain,
+		MaxAge:   maxAge,
+		Secure:   c.secure,
+		HttpOnly: c.httpOnly,
+	})
+
+	ctx.Request.AddCookie(&http.Cookie{
+		Name:     c.refreshTokenKey,
+		Value:    refreshToken,
+		Path:     "/",
+		Domain:   c.domain,
+		MaxAge:   maxAge,
+		Secure:   c.secure,
+		HttpOnly: c.httpOnly,
+	})
+
+	ctx.Request.AddCookie(&http.Cookie{
+		Name:     c.idTokenKey,
+		Value:    idToken,
+		Path:     "/",
+		Domain:   c.domain,
+		MaxAge:   maxAge,
+		Secure:   c.secure,
+		HttpOnly: c.httpOnly,
+	})
 }

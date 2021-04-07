@@ -15,6 +15,7 @@ import (
 	"github.com/coreos/go-oidc"
 	"github.com/deifyed/gatekeeper/pkg/discovery"
 	"github.com/deifyed/gatekeeper/pkg/handlers"
+	"github.com/deifyed/gatekeeper/pkg/middleware"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 	"net/http"
@@ -91,19 +92,27 @@ func New(cfg config.Config, specificationYAML []byte) *gin.Engine {
 		TokenVerifier: idTokenVerifier,
 	}))
 
-	router.GET("/userinfo", handlers.CreateUserinfoHandler(handlers.CreateUserinfoHandlerOpts{
-		Ctx:           ctx,
-		CookieHandler: cookieHandler,
-		Provider:      provider,
-		Logger:        logger,
-	}))
-
 	router.POST("/logout", handlers.CreateLogoutHandler(handlers.CreateLogoutHandlerOpts{
 		Logger:         logger,
 		LogoutEndpoint: discoveryDocument.EndSessionEndpoint,
 		CookieHandler:  cookieHandler,
 		ClientID:       cfg.ClientID,
 		ClientSecret:   cfg.ClientSecret,
+	}))
+
+	router.Use(middleware.NewTokenRefreshMiddleware(middleware.NewTokenRefreshMiddlewareOpts{
+		Logger:        logger,
+		CookieHandler: cookieHandler,
+		TokenEndpoint: discoveryDocument.TokenEndpoint,
+		ClientID:      cfg.ClientID,
+		ClientSecret:  cfg.ClientSecret,
+	}))
+
+	router.GET("/userinfo", handlers.CreateUserinfoHandler(handlers.CreateUserinfoHandlerOpts{
+		Ctx:           ctx,
+		CookieHandler: cookieHandler,
+		Provider:      provider,
+		Logger:        logger,
 	}))
 
 	router.Any("/api/:upstream/*realPath", handlers.CreateProxyHandler(handlers.CreateProxyHandlerOpts{

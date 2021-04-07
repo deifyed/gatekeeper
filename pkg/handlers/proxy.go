@@ -37,7 +37,6 @@ func CreateProxyHandler(opts CreateProxyHandlerOpts) gin.HandlerFunc {
 
 		c.Request.URL.Path = realPath
 
-		// TODO: Refresh token if necessary
 		if accessToken, err := opts.CookieHandler.GetAccessToken(c); err == nil {
 			c.Request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", accessToken))
 		} else {
