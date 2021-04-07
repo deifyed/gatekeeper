@@ -18,6 +18,7 @@ func LoadConfig() Config {
 		ClientSecret: get("CLIENT_SECRET", ""),
 		CookiePrefix: get("COOKIE_PREFIX", ""),
 		Origins:      lGet("ALLOWED_ORIGINS", []string{}),
+		Upstreams:    map[string]string{},
 	}
 
 	if baseURL, _ := url.Parse(get("BASE_URL", "")); baseURL != nil {
@@ -26,6 +27,13 @@ func LoadConfig() Config {
 
 	if discoveryURL, _ := url.Parse(get("DISCOVERY_URL", "")); discoveryURL != nil {
 		cfg.DiscoveryURL = *discoveryURL
+	}
+
+	rawUpstreams := lGet("UPSTREAMS", []string{})
+	for _, upstream := range rawUpstreams {
+		parts := strings.Split(upstream, "=")
+
+		cfg.Upstreams[parts[0]] = parts[1]
 	}
 
 	return cfg

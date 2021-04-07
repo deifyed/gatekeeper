@@ -106,7 +106,7 @@ func New(cfg config.Config, specificationYAML []byte) *gin.Engine {
 		ClientSecret:   cfg.ClientSecret,
 	}))
 
-	router.Any("/api", handlers.CreateProxyHandler(handlers.CreateProxyHandlerOpts{
+	router.Any("/api/:upstream/*realPath", handlers.CreateProxyHandler(handlers.CreateProxyHandlerOpts{
 		Logger:        logger,
 		CookieHandler: cookieHandler,
 		Upstreams:     cfg.Upstreams,
