@@ -2,19 +2,20 @@ package handlers
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/deifyed/gatekeeper/pkg/cookies"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
-	"time"
 )
 
 func (t tokenGetter) Token() (*oauth2.Token, error) {
-	accessToken, err := t.cookieHandler.GetAccessToken(t.c)
+	accessToken, err := t.cookieHandler.GetAccessToken(t.c.Request)
 	if err != nil {
 		return nil, fmt.Errorf("retrieving access token: %w", err)
 	}
 
-	refreshToken, err := t.cookieHandler.GetRefreshToken(t.c)
+	refreshToken, err := t.cookieHandler.GetRefreshToken(t.c.Request)
 	if err != nil {
 		return nil, fmt.Errorf("retrieving refresh token: %w", err)
 	}

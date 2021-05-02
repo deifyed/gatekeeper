@@ -12,13 +12,14 @@ package core
 import (
 	"context"
 	"fmt"
-	"github.com/coreos/go-oidc"
-	"github.com/deifyed/gatekeeper/pkg/discovery"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+
+	"github.com/coreos/go-oidc"
+	"github.com/deifyed/gatekeeper/pkg/discovery"
+	"github.com/gin-gonic/gin"
 )
 
 // NewRouter returns a new router.

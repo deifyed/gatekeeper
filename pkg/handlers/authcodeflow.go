@@ -10,9 +10,10 @@ package handlers
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/deifyed/gatekeeper/pkg/state"
 	"github.com/google/uuid"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -39,7 +40,7 @@ func CreateLoginHandler(storage state.Storage, opts CreateLoginHandlerOpts) gin.
 			return
 		}
 
-		opts.CookieHandler.SetStateID(c, stateID)
+		opts.CookieHandler.SetStateID(c.Writer, stateID)
 
 		c.Redirect(http.StatusFound, opts.Oauth2Config.AuthCodeURL(state))
 	}
@@ -54,7 +55,7 @@ func CreateCallbackHandler(storage state.Storage, opts CreateCallbackHandlerOpts
 	return func(c *gin.Context) {
 		providedState := c.Query("state")
 		code := c.Query("code")
-		stateID, _ := opts.CookieHandler.GetStateID(c)
+		stateID, _ := opts.CookieHandler.GetStateID(c.Request)
 
 		existingState, _ := storage.Get(stateID)
 		if providedState != existingState {
@@ -82,9 +83,9 @@ func CreateCallbackHandler(storage state.Storage, opts CreateCallbackHandlerOpts
 
 		logger.Debug("found idToken: ", idToken)
 
-		opts.CookieHandler.SetAccessToken(c, token.AccessToken, int(token.Expiry.Unix()))
-		opts.CookieHandler.SetRefreshToken(c, token.RefreshToken)
-		opts.CookieHandler.SetIDToken(c, rawIDToken)
+		opts.CookieHandler.SetAccessToken(c.Writer, token.AccessToken, int(token.Expiry.Unix()))
+		opts.CookieHandler.SetRefreshToken(c.Writer, token.RefreshToken)
+		opts.CookieHandler.SetIDToken(c.Writer, rawIDToken)
 
 		c.Redirect(http.StatusFound, "http://localhost:8080")
 	}

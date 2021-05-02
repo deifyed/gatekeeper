@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+
 	"github.com/coreos/go-oidc"
 	"github.com/deifyed/gatekeeper/pkg/cookies"
 	"github.com/gin-gonic/gin"

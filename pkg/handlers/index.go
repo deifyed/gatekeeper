@@ -1,9 +1,10 @@
 package handlers
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/url"
+
+	"github.com/gin-gonic/gin"
 )
 
 type status struct {

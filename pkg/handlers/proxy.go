@@ -2,10 +2,11 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+
+	"github.com/gin-gonic/gin"
 )
 
 const proxyHandlersFile = "pkg/handlers/proxy.go"
@@ -37,13 +38,13 @@ func CreateProxyHandler(opts CreateProxyHandlerOpts) gin.HandlerFunc {
 
 		c.Request.URL.Path = realPath
 
-		if accessToken, err := opts.CookieHandler.GetAccessToken(c); err == nil {
+		if accessToken, err := opts.CookieHandler.GetAccessToken(c.Request); err == nil {
 			c.Request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", accessToken))
 		} else {
 			logger.Warn(fmt.Errorf("fetching access token: %w", err))
 		}
 
-		if idToken, err := opts.CookieHandler.GetIDToken(c); err == nil {
+		if idToken, err := opts.CookieHandler.GetIDToken(c.Request); err == nil {
 			c.Request.Header.Add("x-id-token", idToken)
 		} else {
 			logger.Warn(fmt.Errorf("fetching ID token: %w", err))

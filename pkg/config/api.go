@@ -1,10 +1,11 @@
 package config
 
 import (
-	"github.com/sirupsen/logrus"
 	"net/url"
 	"os"
 	"strings"
+
+	"github.com/sirupsen/logrus"
 )
 
 func LoadConfig() Config {

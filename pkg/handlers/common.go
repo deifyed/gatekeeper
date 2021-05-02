@@ -2,10 +2,11 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 const commonHandlersFile = "pkg/handlers/common.go"
@@ -19,7 +20,7 @@ func CreateLogoutHandler(opts CreateLogoutHandlerOpts) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		values := url.Values{}
 
-		refreshToken, err := opts.CookieHandler.GetRefreshToken(c)
+		refreshToken, err := opts.CookieHandler.GetRefreshToken(c.Request)
 		if err != nil {
 			logger.Warn(fmt.Errorf("unable to get refresh token: %w", err))
 
@@ -51,7 +52,7 @@ func CreateLogoutHandler(opts CreateLogoutHandlerOpts) gin.HandlerFunc {
 			return
 		}
 
-		opts.CookieHandler.DeleteAccessToken(c)
-		opts.CookieHandler.DeleteRefreshToken(c)
+		opts.CookieHandler.DeleteAccessToken(c.Writer)
+		opts.CookieHandler.DeleteRefreshToken(c.Writer)
 	}
 }

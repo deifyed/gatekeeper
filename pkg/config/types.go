@@ -2,8 +2,9 @@ package config
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"net/url"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"

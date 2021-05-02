@@ -2,6 +2,7 @@ package memory
 
 import (
 	"fmt"
+
 	"github.com/deifyed/gatekeeper/pkg/state"
 )
 

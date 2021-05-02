@@ -12,14 +12,16 @@ package core
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"os"
+
 	"github.com/coreos/go-oidc"
 	"github.com/deifyed/gatekeeper/pkg/discovery"
 	"github.com/deifyed/gatekeeper/pkg/handlers"
 	"github.com/deifyed/gatekeeper/pkg/middleware"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
-	"net/http"
-	"os"
+
 	"sigs.k8s.io/yaml"
 
 	"github.com/deifyed/gatekeeper/pkg/config"
@@ -100,13 +102,19 @@ func New(cfg config.Config, specificationYAML []byte) *gin.Engine {
 		ClientSecret:   cfg.ClientSecret,
 	}))
 
-	router.Use(middleware.NewTokenRefreshMiddleware(middleware.NewTokenRefreshMiddlewareOpts{
-		Logger:        logger,
-		CookieHandler: cookieHandler,
-		TokenEndpoint: discoveryDocument.TokenEndpoint,
-		ClientID:      cfg.ClientID,
-		ClientSecret:  cfg.ClientSecret,
-	}))
+	router.Use(func(c *gin.Context) {
+		refreshMiddleware := middleware.NewTokenRefreshMiddleware(middleware.NewTokenRefreshMiddlewareOpts{
+			Logger:        logger,
+			CookieHandler: cookieHandler,
+			TokenEndpoint: discoveryDocument.TokenEndpoint,
+			ClientID:      cfg.ClientID,
+			ClientSecret:  cfg.ClientSecret,
+		})
+
+		refreshMiddleware.ServeHTTP(c.Writer, c.Request)
+
+		c.Next()
+	})
 
 	router.GET("/userinfo", handlers.CreateUserinfoHandler(handlers.CreateUserinfoHandlerOpts{
 		Ctx:           ctx,

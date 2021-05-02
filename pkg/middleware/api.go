@@ -3,7 +3,6 @@ package middleware
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/url"
 	"strings"
@@ -11,20 +10,20 @@ import (
 
 const tokenRefreshMiddlewarePath = "pkg/middleware/api.go"
 
-func NewTokenRefreshMiddleware(opts NewTokenRefreshMiddlewareOpts) gin.HandlerFunc {
+type NextFunc func()
+
+func NewTokenRefreshMiddleware(opts NewTokenRefreshMiddlewareOpts) http.HandlerFunc {
 	logger := opts.Logger.WithFields(map[string]interface{}{
 		"file": tokenRefreshMiddlewarePath,
 		"func": "NewTokenRefreshMiddleware",
 	})
 
-	return func(c *gin.Context) { // TODO: algorithm needs work
-		_, aerr := opts.CookieHandler.GetAccessToken(c)
-		currentRefreshToken, rerr := opts.CookieHandler.GetRefreshToken(c)
+	return func(w http.ResponseWriter, req *http.Request) { // TODO: algorithm needs work
+		currentAccessToken, _ := opts.CookieHandler.GetAccessToken(req)
+		currentRefreshToken, _ := opts.CookieHandler.GetRefreshToken(req)
 
-		if aerr == nil || rerr != nil {
+		if currentAccessToken != "" || currentRefreshToken == "" {
 			logger.Debug("existing access token or missing refresh token. Nothing to do")
-
-			c.Next()
 
 			return
 		}
@@ -34,12 +33,10 @@ func NewTokenRefreshMiddleware(opts NewTokenRefreshMiddlewareOpts) gin.HandlerFu
 			logger.Warn(fmt.Errorf("error requesting new refresh token: %w", err))
 		}
 
-		opts.CookieHandler.SetAccessToken(c, tr.AccessToken, tr.ExpiresIn)
-		opts.CookieHandler.SetRefreshToken(c, tr.RefreshToken)
-		opts.CookieHandler.SetIDToken(c, tr.IDToken)
-		opts.CookieHandler.SyncTokens(c)
-
-		c.Next()
+		opts.CookieHandler.SetAccessToken(w, tr.AccessToken, tr.ExpiresIn)
+		opts.CookieHandler.SetRefreshToken(w, tr.RefreshToken)
+		opts.CookieHandler.SetIDToken(w, tr.IDToken)
+		opts.CookieHandler.SyncTokens(w, req)
 	}
 }
 
