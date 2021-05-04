@@ -26,7 +26,7 @@ import (
 
 	"github.com/deifyed/gatekeeper/pkg/config"
 	"github.com/deifyed/gatekeeper/pkg/cookies"
-	"github.com/deifyed/gatekeeper/pkg/state/memory"
+	"github.com/deifyed/gatekeeper/pkg/storage/memory"
 
 	"github.com/gin-gonic/gin"
 )

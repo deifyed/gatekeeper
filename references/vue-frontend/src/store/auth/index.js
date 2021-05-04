@@ -24,7 +24,11 @@ const actions = {
     }
   },
   async login() {
-    window.location.href = "http://localhost:4554/login"
+    let url = new URL("http://localhost:4554")
+    url.pathname = "/login"
+    url.searchParams.set("redirect", "http://localhost:8000")
+
+    window.location.href = url.toString()
   },
   async logout({ commit }) {
     await axios.request({

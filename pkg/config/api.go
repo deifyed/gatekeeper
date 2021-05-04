@@ -71,14 +71,10 @@ func generateListGetter(getter stringGetter, delimiter string) func(string, []st
 }
 
 func stringToLogLevel(rawLevel string) logrus.Level {
-	switch rawLevel {
-	case "debug":
-		return logrus.DebugLevel
-	case "warning":
-		return logrus.WarnLevel
-	case "error":
-		return logrus.ErrorLevel
-	default:
+	level, err := logrus.ParseLevel(rawLevel)
+	if err != nil {
 		return logrus.InfoLevel
 	}
+
+	return level
 }
