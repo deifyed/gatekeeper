@@ -1,15 +1,21 @@
-FROM golang:1.10 AS build
+FROM golang:1.16 AS build
 WORKDIR /go/src
-COPY go ./go
-COPY main.go .
-
 ENV CGO_ENABLED=0
+
+COPY go.* ./
+
 RUN go get -d -v ./...
 
-RUN go build -a -installsuffix cgo -o openapi .
+COPY specification.yaml .
+COPY main.go .
+
+COPY ./pkg ./pkg
+
+RUN go build -a -installsuffix cgo -o gatekeeper .
 
 FROM scratch AS runtime
 ENV GIN_MODE=release
-COPY --from=build /go/src/openapi ./
-EXPOSE 8080/tcp
-ENTRYPOINT ["./openapi"]
+EXPOSE 4554/tcp
+ENTRYPOINT ["./gatekeeper"]
+
+COPY --from=build /go/src/gatekeeper ./
