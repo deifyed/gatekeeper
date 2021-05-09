@@ -18,8 +18,16 @@ services:
       test: ['CMD', 'curl', 'http://localhost:8080/auth']
       interval: 4s
 
-        #backend:
-        #build: ./gin-upstream
+  upstream:
+    build: ./gin-upstream
+    environment:
+      DISCOVERY_URL: http://auth:8080/auth/realms/gtkp/.well-known/openid-configuration
+    healthcheck:
+      test: ['CMD', 'curl', 'http://localhost:3000/open']
+      interval: 4s
+    depends_on:
+      auth:
+        condition: service_healthy
 
   frontend:
     build: ./vue-frontend/
