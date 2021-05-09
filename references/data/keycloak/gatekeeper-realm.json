@@ -349,12 +349,12 @@
     "credentials" : [ {
       "id" : "be272bd8-33c1-4bc1-9e4d-e0d6dd7e1d92",
       "type" : "password",
-      "createdDate" : 1620553445374,
-      "secretData" : "{\"value\":\"da62CnY2b6kVPiJ3RzRzhIFXtTCiwoUVp/P7mIres/bwRUklSSa6Q4AnVbyZ/jg68AZiQxyGlfJ7PcY1lbxxrg==\",\"salt\":\"MkLfEiFL/6jZmSr+Cpumdg==\",\"additionalParameters\":{}}",
+      "createdDate" : 1620554432750,
+      "secretData" : "{\"value\":\"NeHi1zUKoAdO0MORldmQ+AhGk8RvAkbvwWIjKiUORNOt8v2w7uY0UfJe+yqK/+DUOMWlWv3XS0fkQNPOAjBseg==\",\"salt\":\"yvhTBMMjmI9SRh6/EgMRLw==\",\"additionalParameters\":{}}",
       "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
     } ],
     "disableableCredentialTypes" : [ ],
-    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "requiredActions" : [ ],
     "realmRoles" : [ "offline_access", "uma_authorization" ],
     "clientRoles" : {
       "account" : [ "view-profile", "manage-account" ]
