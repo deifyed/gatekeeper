@@ -74,6 +74,15 @@ func CreateCallbackHandler(storage storage.Client, opts CreateCallbackHandlerOpt
 			return
 		}
 
+		err := storage.DeleteState(stateID)
+		if err != nil {
+			logger.Error("error deleting state cookie", err)
+
+			c.Status(http.StatusInternalServerError)
+
+			return
+		}
+
 		token, err := opts.Oauth2Config.Exchange(opts.Ctx, code)
 		if err != nil {
 			logger.Error(err)
