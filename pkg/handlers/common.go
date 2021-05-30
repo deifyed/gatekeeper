@@ -46,6 +46,10 @@ func CreateLogoutHandler(opts CreateLogoutHandlerOpts) gin.HandlerFunc {
 			return
 		}
 
+		defer func() {
+			_ = response.Body.Close()
+		}()
+
 		if response.StatusCode != http.StatusOK {
 			logger.Warn(fmt.Errorf("bad response code logging out: %d", response.StatusCode))
 
@@ -54,5 +58,6 @@ func CreateLogoutHandler(opts CreateLogoutHandlerOpts) gin.HandlerFunc {
 
 		opts.CookieHandler.DeleteAccessToken(c.Writer)
 		opts.CookieHandler.DeleteRefreshToken(c.Writer)
+		opts.CookieHandler.DeleteIDToken(c.Writer)
 	}
 }

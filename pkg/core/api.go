@@ -32,7 +32,7 @@ import (
 )
 
 // NewRouter returns a new router.
-func New(cfg config.Config, specificationYAML []byte) *gin.Engine {
+func NewRouter(cfg config.Config, specificationYAML []byte) *gin.Engine {
 	router := gin.Default()
 
 	logger := &logrus.Logger{

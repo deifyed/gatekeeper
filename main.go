@@ -20,7 +20,7 @@ import (
 )
 
 //go:embed specification.yaml
-var specification []byte
+var specification []byte //nolint:gochecknoglobals
 
 func main() {
 	log.Printf("Server started")
@@ -32,7 +32,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	router := sw.New(cfg, specification)
+	router := sw.NewRouter(cfg, specification)
 
 	log.Fatal(router.Run(fmt.Sprintf(":%s", cfg.Port)))
 }
