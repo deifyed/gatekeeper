@@ -20,8 +20,11 @@ services:
 
   upstream:
     build: ./gin-upstream
+    ports:
+    - 3000:3000
     environment:
       DISCOVERY_URL: http://auth:8080/auth/realms/gtkp/.well-known/openid-configuration
+      CLIENT_ID: gatekeeper
     healthcheck:
       test: ['CMD', 'curl', 'http://localhost:3000/open']
       interval: 4s
