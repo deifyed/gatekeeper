@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-const tokenRefreshMiddlewarePath = "pkg/middleware/api.go"
+const tokenRefreshMiddlewarePath = "pkg/middleware/api.go" //nolint:gosec
 
 type NextFunc func()
 
@@ -47,7 +47,7 @@ func requestToken(tokenEndpoint, clientID, clientSecret, refreshToken string) (t
 	values.Add("client_secret", clientSecret)
 	values.Add("refresh_token", refreshToken)
 
-	response, err := http.Post(tokenEndpoint, "x-www-form-urlencoded", strings.NewReader(values.Encode()))
+	response, err := http.Post(tokenEndpoint, "x-www-form-urlencoded", strings.NewReader(values.Encode())) //nolint:gosec
 	if err != nil {
 		return tokenResponse{}, fmt.Errorf("requesting new refresh token: %w", err)
 	}
