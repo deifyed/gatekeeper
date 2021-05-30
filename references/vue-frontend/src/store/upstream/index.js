@@ -1,7 +1,9 @@
 import Axios from 'axios'
 
+import config from '~@/app.config.js'
+
 const axios = Axios.create({
-  baseURL: 'http://localhost:4554/api/test',
+  baseURL: config.BACKEND_URL,
   withCredentials: true, // Important. This tells the browser to send cookies
 })
 

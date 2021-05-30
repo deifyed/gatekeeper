@@ -1,7 +1,9 @@
 import Axios from 'axios'
 
+import config from '~@/app.config.js'
+
 const axios = Axios.create({
-  baseURL: 'http://localhost:4554',
+  baseURL: config.GATEKEEPER_URL,
   withCredentials: true, // Important. This tells the browser to send cookies
 })
 
@@ -24,9 +26,9 @@ const actions = {
     }
   },
   async login() {
-    let url = new URL("http://localhost:4554")
+    let url = new URL(config.GATEKEEPER_URL)
     url.pathname = "/login"
-    url.searchParams.set("redirect", "http://localhost:8000")
+    url.searchParams.set("redirect", config.BASE_URL)
 
     window.location.href = url.toString()
   },

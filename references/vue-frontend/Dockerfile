@@ -27,10 +27,10 @@ RUN npm run build
 FROM nginx:stable-alpine AS production-stage
 
 EXPOSE 80
-VOLUME ["/usr/share/nginx/html", "/etc/nginx/conf.d"]
 
 RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
 	ln -sf /dev/stderr /var/log/nginx/error.log
 
+COPY docker-entrypoint.d/* /docker-entrypoint.d/
 COPY --from=build-stage /build/dist /usr/share/nginx/html
 
