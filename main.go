@@ -6,7 +6,13 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/deifyed/gatekeeper/gen"
 	"github.com/deifyed/gatekeeper/internal/core"
+)
+
+const (
+	defaultHost = "0.0.0.0"
+	defaultPort = 3000
 )
 
 func main() {
@@ -18,10 +24,17 @@ func main() {
 }
 
 func run() error {
+	host := defaultHost
+	port := defaultPort
+
+	handler := gen.HandlerFromMux(&core.Server{}, http.NewServeMux())
+
 	server := http.Server{
-		Addr:    "0.0.0.0:3000",
-		Handler: &core.Server{},
+		Addr:    fmt.Sprintf("%s:%d", host, port),
+		Handler: handler,
 	}
+
+	fmt.Printf("Listening on %s:%d\n", host, port)
 
 	return server.ListenAndServe()
 }
