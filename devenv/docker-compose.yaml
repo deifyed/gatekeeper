@@ -1,0 +1,75 @@
+services:
+  keycloak:
+    profiles: ["default"]
+    image: keycloak/keycloak:26.4.1
+    ports:
+      - 8080:8080
+    command: ["start-dev"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      DB_VENDOR: h2
+    volumes:
+      - type: bind
+        source: ./data/keycloak
+        target: /opt/keycloak/data/h2
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:8080/auth"]
+      interval: 4s
+  #  upstream:
+  #    build: ./gin-upstream
+  #    ports:
+  #    - 3000:3000
+  #    environment:
+  #      DISCOVERY_URL: http://auth:8080/auth/realms/gtkp/.well-known/openid-configuration
+  #      CLIENT_ID: gtkc
+  #      CLIENT_SECRET: kN9PuXdhZAR1kX2SuFo49jpvfl1UnqEr
+  #    healthcheck:
+  #      test: ['CMD', 'curl', 'http://localhost:3000/open']
+  #      interval: 4s
+  #    depends_on:
+  #      auth:
+  #        condition: service_healthy
+  #
+  #  frontend:
+  #    build: ./vue-frontend/
+  #    environment:
+  #      VITE_BASE_URL: http://localhost:8000
+  #      VITE_GATEKEEPER_URL: http://localhost:4554
+  #      VITE_BACKEND_URL: http://localhost:4554/api/backend
+  #    ports:
+  #    - 8000:80
+  #    healthcheck:
+  #      test: ['CMD', 'curl', 'http://localhost']
+  #      interval: 4s
+  exporter:
+    profiles: ["export"]
+    image: keycloak/keycloak:26.4.1
+    command:
+      [
+        "export",
+        "--realm",
+        "gatekeeper",
+        "--users",
+        "same_file",
+        "--file",
+        "/opt/keycloak/data/h2/export.json",
+      ]
+    environment:
+      DB_VENDOR: h2
+    volumes:
+      - type: bind
+        source: ./data/keycloak
+        target: /opt/keycloak/data/h2
+
+  importer:
+    profiles: ["import"]
+    image: keycloak/keycloak:26.4.1
+    command:
+      ["import", "--file", "/opt/keycloak/data/h2/export.json", "--verbose"]
+    environment:
+      DB_VENDOR: h2
+    volumes:
+      - type: bind
+        source: ./data/keycloak
+        target: /opt/keycloak/data/h2
